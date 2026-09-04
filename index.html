@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakout Learning — Email Signature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#000000;
+    --gray:#6b6b6b;
+    --line:#e4e4e4;
+    --field:#d9d9d9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#ffffff;
+    color:var(--ink);
+    font-family:'Poppins',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1020px;margin:0 auto;padding:56px 28px 80px}
+  header h1{
+    font-size:clamp(26px,4vw,38px);
+    font-weight:600;
+    letter-spacing:-0.02em;
+    line-height:1.1;
+    margin:0 0 10px;
+  }
+  header p{
+    margin:0;
+    color:var(--gray);
+    font-size:15px;
+    max-width:56ch;
+  }
+  main{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:56px;
+    margin-top:48px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:500;
+    margin:0 0 6px;
+  }
+  input{
+    width:100%;
+    padding:10px 12px;
+    font:400 14px/1.4 'Poppins',Arial,sans-serif;
+    border:1px solid var(--field);
+    border-radius:6px;
+    margin-bottom:18px;
+    color:var(--ink);
+  }
+  input:focus{outline:2px solid var(--ink);outline-offset:1px;border-color:var(--ink)}
+  .check{display:flex;align-items:center;gap:9px;margin:2px 0 18px;font-size:13.5px;font-weight:400;cursor:pointer}
+  .check input{width:auto;margin:0;accent-color:var(--ink);cursor:pointer}
+  button{
+    width:100%;
+    padding:13px 16px;
+    font:500 15px 'Poppins',Arial,sans-serif;
+    color:#fff;
+    background:var(--ink);
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  button:hover{background:#262626}
+  button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  button.done{background:#0a7a3d}
+  ol.steps{
+    margin:32px 0 0;
+    padding:0 0 0 20px;
+    color:var(--gray);
+    font-size:13.5px;
+    line-height:1.7;
+  }
+  ol.steps li{margin-bottom:6px}
+  ol.steps b{color:var(--ink);font-weight:500}
+  .preview-label{
+    font-size:13px;
+    font-weight:500;
+    margin:0 0 10px;
+  }
+  .preview{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:32px 28px;
+    background:#fff;
+    min-height:180px;
+  }
+  .preview-note{
+    color:var(--gray);
+    font-size:12.5px;
+    margin-top:12px;
+    line-height:1.6;
+  }
+  @media (max-width:820px){
+    main{grid-template-columns:1fr;gap:40px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Email signature</h1>
+    <p>Fill in your details, copy, and paste into Gmail. Images load from the Breakout&nbsp;Learning site, so the signature stays up to date on its own.</p>
+  </header>
+
+  <main>
+    <section aria-label="Your details">
+      <label for="f-name">Full name</label>
+      <input id="f-name" type="text" value="" placeholder="Melanie Collier" autocomplete="name">
+
+      <label for="f-title">Job title</label>
+      <input id="f-title" type="text" value="" placeholder="People Operations" autocomplete="organization-title">
+
+      <label for="f-phone">Phone <span style="color:#6b6b6b;font-weight:400">(optional)</span></label>
+      <input id="f-phone" type="text" value="" placeholder="(408) 482-4394" autocomplete="tel">
+
+      <label class="check" for="f-community">
+        <input id="f-community" type="checkbox">
+        Include the “Join the Breakout Community” badge
+      </label>
+
+      <button id="copy-btn" type="button">Copy signature</button>
+
+      <ol class="steps">
+        <li>Fill in your name and title.</li>
+        <li>Click <b>Copy signature</b>.</li>
+        <li>In Gmail, open <b>Settings&nbsp;→ See all settings&nbsp;→ General&nbsp;→ Signature</b>.</li>
+        <li>Delete the old signature content and paste.</li>
+        <li>Scroll down and click <b>Save changes</b>.</li>
+      </ol>
+    </section>
+
+    <section aria-label="Preview">
+      <p class="preview-label">Preview</p>
+      <div class="preview" id="preview"></div>
+      <p class="preview-note">If the images look broken here, the hosted files aren't live yet — the layout and copy behavior still work the same.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ================================================================
+   CONFIG — the only part you should ever need to edit.
+   Images are hosted in HubSpot File Manager, served via
+   breakoutlearning.com/hubfs/ — stable as long as the files stay put.
+   ================================================================ */
+const CONFIG = {
+  logoUrl:      "https://www.breakoutlearning.com/hubfs/Signature/BL%20Logo%20Vertical%20White%20150x150.png",
+  communityUrl: "https://www.breakoutlearning.com/hubfs/Signature/Join%20the%20Breakout%20Community%20150x150.png",
+  linkedinUrl:  "https://www.breakoutlearning.com/hubfs/Signature/linkedin.jpg",
+  xUrl:         "https://www.breakoutlearning.com/hubfs/Signature/x.jpg",
+  siteLink:      "https://www.breakoutlearning.com/",
+  communityLink: "https://breakout-community.slack.com/join/shared_invite/zt-2o5ezwsj7-cmHGvdbxQua_9Z~XkYBj8Q#/shared-invite/email",
+  linkedinLink:  "https://www.linkedin.com/company/breakout-learning/",
+  xLink:         "https://twitter.com/breakoutlearn"
+};
+
+/* Signature markup — the team's template HTML verbatim; only the
+   name/title/phone values are injected. Don't restructure it: this
+   exact markup is what renders correctly across clients. */
+function signatureHtml(name, title, phone, community){
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  // Height math: 3 text lines × (10pt × 1.2 = 16px) + 22px icons = 70px = image height.
+  // If phone is empty, keep an empty third line so the icons still land on the bottom edge.
+  const phoneRow = phone
+    ? `<p dir="ltr" style="line-height:1.2;margin:0;color:#999999;">${esc(phone)}</p>`
+    : `<p dir="ltr" style="line-height:1.2;margin:0;">&nbsp;</p>`;
+  const communityTd = community ? `
+      <td style="vertical-align: top; padding: 5pt 5pt 0 0;">
+        <p dir="ltr" style="line-height:1.2; margin:0;">
+          <a href="${CONFIG.communityLink}" style="text-decoration:none;">
+            <img src="${CONFIG.communityUrl}" height="70" alt="Join the Breakout Community">
+          </a>
+        </p>
+      </td>` : '';
+  return `<table style="border: none; border-collapse: collapse;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; padding: 5pt 5pt 0 0;">
+        <p dir="ltr" style="line-height:1.2; margin:0;">
+          <a href="${CONFIG.siteLink}" style="text-decoration:none;">
+            <img src="${CONFIG.logoUrl}" height="70" alt="Breakout Learning">
+          </a>
+        </p>
+      </td>${communityTd}
+      <td style="vertical-align: top; padding: 5pt 5pt 0 0; overflow: hidden; font-size:10pt;font-family:Arial,sans-serif;background-color:transparent;font-weight:400;">
+        <p dir="ltr" style="line-height:1.2;margin:0;color:#000000;"><b>${esc(name)}</b></p>
+        <p dir="ltr" style="line-height:1.2;margin:0;color:#999999;">${esc(title)}</p>
+        ${phoneRow}
+        <p dir="ltr" style="line-height:22px;margin:0;">
+          <a href="${CONFIG.linkedinLink}" style="text-decoration:none;line-height:22px;margin:0;">
+            <img src="${CONFIG.linkedinUrl}" width="22" height="22" alt="LinkedIn" style="vertical-align:bottom;">
+          </a>
+          <a href="${CONFIG.xLink}" style="text-decoration:none;line-height:22px;margin:0;">
+            <img src="${CONFIG.xUrl}" width="22" height="22" alt="X" style="vertical-align:bottom;">
+          </a>
+        </p>
+      </td>
+    </tr>
+  </tbody>
+</table>`;
+}
+
+const $ = id => document.getElementById(id);
+const fields = ["f-name","f-title","f-phone"];
+
+function currentValues(){
+  return {
+    name:  $("f-name").value.trim()  || $("f-name").placeholder,
+    title: $("f-title").value.trim() || $("f-title").placeholder,
+    phone: $("f-phone").value.trim(),
+    community: $("f-community").checked
+  };
+}
+
+function render(){
+  const v = currentValues();
+  $("preview").innerHTML = signatureHtml(v.name, v.title, v.phone, v.community);
+}
+
+fields.forEach(id => $(id).addEventListener("input", render));
+$("f-community").addEventListener("change", render);
+render();
+
+$("copy-btn").addEventListener("click", async () => {
+  const v = currentValues();
+  const html = signatureHtml(v.name, v.title, v.phone, v.community);
+  const plain = [v.name, v.title, v.phone, CONFIG.siteLink].filter(Boolean).join("\n");
+  let ok = false;
+
+  if (navigator.clipboard && window.ClipboardItem){
+    try{
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html":  new Blob([html],  {type:"text/html"}),
+        "text/plain": new Blob([plain], {type:"text/plain"})
+      })]);
+      ok = true;
+    }catch(e){ /* fall through to selection copy */ }
+  }
+
+  if (!ok){
+    const range = document.createRange();
+    range.selectNodeContents($("preview"));
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    ok = document.execCommand("copy");
+    sel.removeAllRanges();
+  }
+
+  const btn = $("copy-btn");
+  btn.textContent = ok ? "Copied — now paste into Gmail" : "Copy failed — select the preview and press Ctrl/Cmd+C";
+  btn.classList.toggle("done", ok);
+  setTimeout(() => {
+    btn.textContent = "Copy signature";
+    btn.classList.remove("done");
+  }, 3000);
+});
+</script>
+</body>
+</html>
